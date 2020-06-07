@@ -79,7 +79,7 @@
 		31B790F5A27AB7D17F2C622676A5F645 /* FileViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileViewController.swift; sourceTree = "<group>"; };
 		368FF4866E7A6BDD4FAA5A71CE460894 /* Configuration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		3849D8A5CF0A0DFC1A743CA097E3C8A1 /* ImageViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
-		3DEED71AD5CA0F8B9F0950C9B8B9FDB8 /* FileExplorer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FileExplorer.framework; path = FileExplorer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DEED71AD5CA0F8B9F0950C9B8B9FDB8 /* FileExplorer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FileExplorer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E56F4847F3B26805DD4BA3F6DDBEBE7 /* Result.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		53DFD71010776EDA6AE170F3359E5B3D /* Pods-FileExplorerExampleApp-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FileExplorerExampleApp-acknowledgements.plist"; sourceTree = "<group>"; };
 		53FADBE07F294FDE4957D566D9893D14 /* ErrorViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ErrorViewController.swift; sourceTree = "<group>"; };
@@ -89,9 +89,9 @@
 		60624933B0C46CE3E2306E4B4634CA84 /* ItemCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
 		6510655ED7EF4293F38085798DC3A0D8 /* FileExplorerViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileExplorerViewController.swift; sourceTree = "<group>"; };
 		666A8C75D0B0E54F22EBF2DAD07D8518 /* Array+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
-		6ACB89D3A3E0DB93D56757E6BD14725A /* Pods_FileExplorerExampleApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_FileExplorerExampleApp.framework; path = "Pods-FileExplorerExampleApp.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6ACB89D3A3E0DB93D56757E6BD14725A /* Pods_FileExplorerExampleApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FileExplorerExampleApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C779E80613EBDBC8090DD0D7A7F9F2E /* UIImage+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
-		750A5F71AFBFF3FE436EE513BAE807BA /* FileExplorer.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = FileExplorer.modulemap; sourceTree = "<group>"; };
+		750A5F71AFBFF3FE436EE513BAE807BA /* FileExplorer.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = FileExplorer.modulemap; sourceTree = "<group>"; };
 		7CED1B151C7F6EDD696632D62E5DB909 /* UISearchBar+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UISearchBar+Extension.swift"; sourceTree = "<group>"; };
 		825328DBF1E784B191A6C7BB6EBD407E /* Errors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		87B791C2DFB9CB894F3CD2E712ED7615 /* DirectoryContentViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DirectoryContentViewModel.swift; sourceTree = "<group>"; };
@@ -99,7 +99,7 @@
 		8CBD4D1A2A353B82347201CF72A57326 /* ActionsViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ActionsViewController.swift; sourceTree = "<group>"; };
 		928AEDCDC4B2CB3E80BB58699E2DE9E9 /* UIView+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		92CE3EAA76B66656BBD9321C8F36AA87 /* ImageAssets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImageAssets.swift; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		964948134436BD8831B6DDD2AA8EC4DF /* ThumbnailGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ThumbnailGenerator.swift; sourceTree = "<group>"; };
 		9B8BD41F7DA00BBCB0643046F484BDFE /* Item.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		9C6413111B650036F2C1B4EE62F9577E /* FileItemPresentationCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FileItemPresentationCoordinator.swift; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 		DE990690F786A5747E2E0C7E6D39B7C6 /* FileExplorer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FileExplorer.h; sourceTree = "<group>"; };
 		DF63AB04F34BEC815947009ED0B5F307 /* ImageAssets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = ImageAssets.xcassets; sourceTree = "<group>"; };
 		E157D4FCEFD1BCE54CD6F9D925ABFDAB /* FileExplorer-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FileExplorer-prefix.pch"; sourceTree = "<group>"; };
-		E628AE8CD01190837B4A1401F7887735 /* Pods-FileExplorerExampleApp.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-FileExplorerExampleApp.modulemap"; sourceTree = "<group>"; };
+		E628AE8CD01190837B4A1401F7887735 /* Pods-FileExplorerExampleApp.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-FileExplorerExampleApp.modulemap"; sourceTree = "<group>"; };
 		E6BCC8AC8A9FADA2B5FA5E500998B931 /* UIBezierPath+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+Extension.swift"; sourceTree = "<group>"; };
 		F6F744C6D98B8A0983B79805E517ED3A /* Pods-FileExplorerExampleApp-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-FileExplorerExampleApp-resources.sh"; sourceTree = "<group>"; };
 		F77A016507B64ECE7C1D980618482654 /* UITableView+Extension.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
@@ -170,7 +170,6 @@
 				DF63AB04F34BEC815947009ED0B5F307 /* ImageAssets.xcassets */,
 				FEC98877BB010FB62EEED5A76D85E721 /* Info.plist */,
 			);
-			name = Resources;
 			path = Resources;
 			sourceTree = "<group>";
 		};
@@ -179,7 +178,6 @@
 			children = (
 				CD4334AE5E1407159C357BF2533B6E25 /* FileExplorer */,
 			);
-			name = FileExplorer;
 			path = FileExplorer;
 			sourceTree = "<group>";
 		};
@@ -241,7 +239,6 @@
 			children = (
 				E634C03E8255A2E839D2DDD9535BC5DB /* FileExplorer */,
 			);
-			name = FileExplorer;
 			path = FileExplorer;
 			sourceTree = "<group>";
 		};
@@ -266,7 +263,6 @@
 			children = (
 				4044FAF7401138A1F1F5D693A4D112BB /* Resources */,
 			);
-			name = FileExplorer;
 			path = FileExplorer;
 			sourceTree = "<group>";
 		};
@@ -312,7 +308,6 @@
 				0DBA294F8F5DEECC99C9D7893FFB1F7B /* URL+Extension.swift */,
 				DB33EBB1B26C666546A24800F9AF1202 /* WebViewController.swift */,
 			);
-			name = FileExplorer;
 			path = FileExplorer;
 			sourceTree = "<group>";
 		};
@@ -407,6 +402,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
@@ -523,7 +519,7 @@
 				PRODUCT_NAME = FileExplorer;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -603,7 +599,7 @@
 				PRODUCT_NAME = Pods_FileExplorerExampleApp;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -640,7 +636,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -673,7 +669,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";

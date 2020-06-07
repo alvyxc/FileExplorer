@@ -43,7 +43,7 @@ public protocol FileExplorerViewControllerDelegate: class {
 }
 
 /// The FileExplorerViewController class manages customizable for displaying, removing and choosing files and directories stored in local storage of the device in your app. A file explorer view controller manages user interactions and delivers the results of those interactions to a delegate object.
-public final class FileExplorerViewController: UIViewController {
+open class FileExplorerViewController: UIViewController {
 
     /// The URL of directory which is initialy presented by file explorer view controller.
     public var initialDirectoryURL: URL = URL.documentDirectory
@@ -55,7 +55,7 @@ public final class FileExplorerViewController: UIViewController {
     public var canRemoveDirectories: Bool = true
 
     /// A Boolean value indicating whether the user is allowed to choose files.
-    public var canChooseFiles: Bool = true
+    public var canChooseFiles: Bool = false
 
     /// A Boolean value indicating whether the user is allowed to choose directories.
     public var canChooseDirectories: Bool = false
@@ -80,7 +80,7 @@ public final class FileExplorerViewController: UIViewController {
     ///
     /// FileExplorer combines these providers with the default ones and uses resulting set of providers to present thumbnails and view controllers of files of specified type. Providers provided by the user have higher priority than the default ones.
     public var fileSpecificationProviders: [FileSpecificationProvider.Type]
-    private var coordinator: ItemPresentationCoordinator!
+    public var coordinator: ItemPresentationCoordinator?
 
     /// Initializes and returns a new file explorer view controller that presents content of directory at specified URL and uses passed file specification providers.
     ///
@@ -98,7 +98,7 @@ public final class FileExplorerViewController: UIViewController {
         super.init(coder: aDecoder)
     }
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.white
@@ -106,7 +106,7 @@ public final class FileExplorerViewController: UIViewController {
         let navigationController = UINavigationController()
         addContentChildViewController(navigationController)
         coordinator = ItemPresentationCoordinator(navigationController: navigationController)
-        coordinator.delegate = self
+        coordinator!.delegate = self
     }
 
     override public func viewWillAppear(_ animated: Bool) {
@@ -122,17 +122,20 @@ public final class FileExplorerViewController: UIViewController {
         let configuration = Configuration(actionsConfiguration: actionsConfiguration, filteringConfiguration: filteringConfiguration)
 
         if let item = Item<Any>.at(initialDirectoryURL, isDirectory: true) {
-            coordinator.start(item: item, fileSpecifications: fileSpecifications, configuration: configuration, animated: false)
+            print("Item is " + item.name + item.extension)
+            coordinator!.start(item: item, fileSpecifications: fileSpecifications, configuration: configuration, animated: false)
         } else {
             precondition(false, "Passed URL is incorrect.")
         }
+ 
     }
     
     override public func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        coordinator.stop(false)
+        coordinator!.stop(false)
     }
 }
+
 
 extension FileExplorerViewController: ItemPresentationCoordinatorDelegate {
     func itemPresentationCoordinatorDidFinish(_ coordinator: ItemPresentationCoordinator) {

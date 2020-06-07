@@ -32,7 +32,7 @@ protocol ItemPresentationCoordinatorDelegate: class {
     func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseItems items: [Item<Any>])
 }
 
-final class ItemPresentationCoordinator {
+open class ItemPresentationCoordinator {
     weak var delegate: ItemPresentationCoordinatorDelegate?
 
     fileprivate weak var navigationController: UINavigationController?

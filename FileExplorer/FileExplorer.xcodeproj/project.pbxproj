@@ -40,7 +40,6 @@
 		063C9CDB1DD61D6900F96F43 /* FileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063C9CDA1DD61D6900F96F43 /* FileService.swift */; };
 		063C9CDD1DD7299200F96F43 /* LocalStorageFileServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063C9CDC1DD7299200F96F43 /* LocalStorageFileServiceTests.swift */; };
 		063C9CDF1DD733B800F96F43 /* FileManager+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063C9CDE1DD733B800F96F43 /* FileManager+Extension.swift */; };
-		063C9CEB1DD7697200F96F43 /* ImageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 063C9CE71DD7697200F96F43 /* ImageAssets.xcassets */; };
 		063C9CFD1DD77E3200F96F43 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063C9CFC1DD77E3200F96F43 /* Double+Extension.swift */; };
 		0649A8451DF03BF900D2B0BC /* UknownFileTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0649A8441DF03BF900D2B0BC /* UknownFileTypeViewController.swift */; };
 		0649A8471DF0418C00D2B0BC /* UknownFileTypeViewControllerSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0649A8461DF0418C00D2B0BC /* UknownFileTypeViewControllerSnapshotTests.swift */; };
@@ -67,6 +66,7 @@
 		06D71CD91DCC886A0081BD35 /* CheckmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D71CD81DCC886A0081BD35 /* CheckmarkButton.swift */; };
 		06D71CDB1DCC8C040081BD35 /* UIBezierPath+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D71CDA1DCC8C040081BD35 /* UIBezierPath+Extension.swift */; };
 		47A719CE2A2877298EF52AAC /* Pods_FileExplorerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B71403628E4A8CFC10D65AA /* Pods_FileExplorerTests.framework */; };
+		4CBDEB02247C51870056C1A8 /* ImageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 063C9CE71DD7697200F96F43 /* ImageAssets.xcassets */; };
 		63D13BCB2B2C828E591124E6 /* Pods_FileExplorer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D735AF00715E26D5A8860E10 /* Pods_FileExplorer.framework */; };
 /* End PBXBuildFile section */
 
@@ -450,6 +450,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -480,7 +481,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				063C9CEB1DD7697200F96F43 /* ImageAssets.xcassets in Resources */,
+				4CBDEB02247C51870056C1A8 /* ImageAssets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,7 +692,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = augustyniak.rafal.FileExplorerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FileExplorerTestHostApp.app/FileExplorerTestHostApp";
 			};
 			name = Debug;
@@ -706,7 +707,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = augustyniak.rafal.FileExplorerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FileExplorerTestHostApp.app/FileExplorerTestHostApp";
 			};
 			name = Release;
@@ -831,7 +832,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -853,7 +854,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -868,7 +869,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = augustyniak.rafal.FileExplorerTestHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -883,7 +884,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = augustyniak.rafal.FileExplorerTestHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
