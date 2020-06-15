@@ -52,6 +52,10 @@ final class DirectoryViewModel {
     func makeDirectoryContentViewModel() -> DirectoryContentViewModel {
         return DirectoryContentViewModel(item: item, fileSpecifications: fileSpecifications, configuration: configuration)
     }
+    
+    func isSearchEnabled() -> Bool {
+        return self.configuration.actionsConfiguration.canSearchFile
+    }
 }
 
 protocol DirectoryViewControllerDelegate: class {
@@ -100,8 +104,12 @@ final class DirectoryViewController: UIViewController {
         extendedLayoutIncludesOpaqueBars = false
         edgesForExtendedLayout = []
         
-        setUpSearchBarController()
-        addContentChildViewController(directoryContentViewController, insets: UIEdgeInsets(top: searchController.searchBar.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
+        if (self.viewModel.isSearchEnabled()) {
+            setUpSearchBarController()
+            addContentChildViewController(directoryContentViewController, insets: UIEdgeInsets(top: searchController.searchBar.bounds.height, left: 0.0, bottom: 0.0, right: 0.0))
+        } else {
+            addContentChildViewController(directoryContentViewController, insets: UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0))
+        }
         navigationItem.rightBarButtonItem = directoryContentViewController.navigationItem.rightBarButtonItem
         navigationItem.title = directoryContentViewController.navigationItem.title
         view.sendSubviewToBack(directoryContentViewController.view)

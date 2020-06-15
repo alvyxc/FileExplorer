@@ -62,6 +62,9 @@ open class FileExplorerViewController: UIViewController {
 
     /// A Boolean value indicating whether multiple files and/or directories can be choosen at a time.
     public var allowsMultipleSelection: Bool = true
+    
+    /// A Boolean value indicating whether to display search bar.
+    public var canSearchFile: Bool = false
 
     /// Filters that determine which files are displayed by file explorer view controller.
     ///
@@ -117,12 +120,12 @@ open class FileExplorerViewController: UIViewController {
                                                         canRemoveDirectories: canRemoveDirectories,
                                                         canChooseFiles: canChooseFiles,
                                                         canChooseDirectories: canChooseDirectories,
-                                                        allowsMultipleSelection: allowsMultipleSelection)
+                                                        allowsMultipleSelection: allowsMultipleSelection,
+                                                        canSearchFile: canSearchFile)
         let filteringConfiguration = FilteringConfiguration(fileFilters: fileFilters, ignoredFileFilters: ignoredFileFilters)
         let configuration = Configuration(actionsConfiguration: actionsConfiguration, filteringConfiguration: filteringConfiguration)
 
         if let item = Item<Any>.at(initialDirectoryURL, isDirectory: true) {
-            print("Item is " + item.name + item.extension)
             coordinator!.start(item: item, fileSpecifications: fileSpecifications, configuration: configuration, animated: false)
         } else {
             precondition(false, "Passed URL is incorrect.")

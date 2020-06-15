@@ -36,6 +36,7 @@ struct ActionsConfiguration {
     var canChooseFiles: Bool = false
     var canChooseDirectories: Bool = false
     var allowsMultipleSelection: Bool = false
+    var canSearchFile: Bool = false
 }
 
 struct FilteringConfiguration {
