@@ -27,6 +27,7 @@ import UIKit
 
 final class DirectoryViewModel {
     fileprivate let finishButtonHidden: Bool
+    fileprivate let useSetting: Bool
 
     private let url: URL
     private let item: LoadedDirectoryItem
@@ -39,6 +40,7 @@ final class DirectoryViewModel {
         self.fileSpecifications = fileSpecifications
         self.configuration = configuration
         self.finishButtonHidden = finishButtonHidden
+        self.useSetting = configuration.actionsConfiguration.useSetting
     }
 
     var finishButtonTitle: String {
@@ -62,7 +64,12 @@ protocol DirectoryViewControllerDelegate: class {
     func directoryViewController(_ controller: DirectoryViewController, didSelectItem item: Item<Any>)
     func directoryViewController(_ controller: DirectoryViewController, didSelectItemDetails item: Item<Any>)
     func directoryViewController(_ controller: DirectoryViewController, didChooseItems items: [Item<Any>])
+    func directoryViewController(_ controller: DirectoryViewController, didCustomAction items: [Item<Any>])
+    func directoryViewController(_ controller: DirectoryViewController, didCustomAction2 items: [Item<Any>])
+    func directoryViewControllerToolBarItems(_ controller: DirectoryViewController)
     func directoryViewControllerDidFinish(_ controller: DirectoryViewController)
+    func directoryViewControllerDoSetup(_ controller: DirectoryViewController)
+    
 }
 
 final class DirectoryViewController: UIViewController {
@@ -114,8 +121,10 @@ final class DirectoryViewController: UIViewController {
         navigationItem.title = directoryContentViewController.navigationItem.title
         view.sendSubviewToBack(directoryContentViewController.view)
         setUpLeftBarButtonItem()
+        setupSettingButtonItem()
+        toolbarItems = directoryContentViewController.toolbarItems
     }
-
+    
     func setUpSearchBarController() {
         let searchBar = searchController.searchBar
         searchBar.sizeToFit()
@@ -128,6 +137,13 @@ final class DirectoryViewController: UIViewController {
     func setUpLeftBarButtonItem() {
         if !viewModel.finishButtonHidden {
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: viewModel.finishButtonTitle, style: .plain, target: self, action: #selector(handleFinishButtonTap))
+        }
+    }
+    
+    func setupSettingButtonItem() {
+        if viewModel.useSetting {
+            let settingIcon = UIImage(named: "setting")
+             navigationItem.leftBarButtonItem = UIBarButtonItem(image: settingIcon, style: .plain, target: self, action: #selector(handleSettingButtonTap))
         }
     }
 
@@ -144,6 +160,10 @@ final class DirectoryViewController: UIViewController {
 
     @objc func handleFinishButtonTap() {
         delegate?.directoryViewControllerDidFinish(self)
+    }
+    
+    @objc func handleSettingButtonTap() {
+        delegate?.directoryViewControllerDoSetup(self)
     }
 }
 
@@ -170,4 +190,19 @@ extension DirectoryViewController: DirectoryContentViewControllerDelegate {
     func directoryContentViewController(_ controller: DirectoryContentViewController, didChooseItems items: [Item<Any>]) {
         delegate?.directoryViewController(self, didChooseItems: items)
     }
+    
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction items: [Item<Any>]) {
+        delegate?.directoryViewController(self, didCustomAction: items)
+    }
+
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction2 items: [Item<Any>]) {
+        delegate?.directoryViewController(self, didCustomAction2: items)
+    }
+    
+    func directoryContentViewControllerToolBarItems(_ controller: DirectoryContentViewController) {
+        self.toolbarItems = controller.toolbarItems
+        delegate?.directoryViewControllerToolBarItems(self)
+    }
+    
+    
 }

@@ -29,7 +29,10 @@ import AVFoundation
 
 protocol ItemPresentationCoordinatorDelegate: class {
     func itemPresentationCoordinatorDidFinish(_ coordinator: ItemPresentationCoordinator)
+    func itemPresentationCoordinatorDoSetup(_ coordinator: ItemPresentationCoordinator)
     func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseItems items: [Item<Any>])
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction items: [Item<Any>])
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction2 items: [Item<Any>])
 }
 
 open class ItemPresentationCoordinator {
@@ -84,7 +87,19 @@ extension ItemPresentationCoordinator: DirectoryItemPresentationCoordinatorDeleg
         delegate?.itemPresentationCoordinator(self, didChooseItems: items)
     }
     
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction items: [Item<Any>]) {
+        delegate?.itemPresentationCoordinator(self, didCustomAction: items)
+    }
+    
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction2 items: [Item<Any>]) {
+        delegate?.itemPresentationCoordinator(self, didCustomAction2: items)
+    }
+    
     func directoryItemPresentationCoordinatorDidFinish(_ coordinator: DirectoryItemPresentationCoordinator) {
         delegate?.itemPresentationCoordinatorDidFinish(self)
+    }
+    
+    func directoryItemPresentationCoordinatorDoSetup(_ coordinator: DirectoryItemPresentationCoordinator) {
+           delegate?.itemPresentationCoordinatorDoSetup(self)
     }
 }

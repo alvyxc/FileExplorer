@@ -28,6 +28,7 @@ import Foundation
 struct Configuration {
     var actionsConfiguration = ActionsConfiguration()
     var filteringConfiguration = FilteringConfiguration()
+    var customActions = CustomActions()
 }
 
 struct ActionsConfiguration {
@@ -37,6 +38,7 @@ struct ActionsConfiguration {
     var canChooseDirectories: Bool = false
     var allowsMultipleSelection: Bool = false
     var canSearchFile: Bool = false
+    var useSetting: Bool = false
 }
 
 struct FilteringConfiguration {

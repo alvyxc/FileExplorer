@@ -76,6 +76,7 @@ final class ItemCell: UICollectionViewCell, Editable {
         titleTextLabel.numberOfLines = 1
         titleTextLabel.lineBreakMode = .byTruncatingMiddle
         titleTextLabel.font = UIFont.systemFont(ofSize: 17)
+        titleTextLabel.textColor = UIColor.black
         containerView.addSubview(titleTextLabel)
         
         subtitleTextLabel = UILabel()
@@ -90,6 +91,7 @@ final class ItemCell: UICollectionViewCell, Editable {
         containerView.addSubview(accessoryImageView)
 
         checkmarkButton = CheckmarkButton()
+        checkmarkButton.isUserInteractionEnabled = false
 
         accessoryImageViewTapRecognizer = UITapGestureRecognizer(target: nil, action: nil)
 

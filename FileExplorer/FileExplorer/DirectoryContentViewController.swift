@@ -23,13 +23,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import Foundation
+import UIKit
 
 protocol DirectoryContentViewControllerDelegate: class {
     func directoryContentViewController(_ controller: DirectoryContentViewController, didChangeEditingStatus isEditing: Bool)
     func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItem item: Item<Any>)
     func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItemDetails item: Item<Any>)
     func directoryContentViewController(_ controller: DirectoryContentViewController, didChooseItems items: [Item<Any>])
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction items: [Item<Any>])
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction2 items: [Item<Any>])
+    func directoryContentViewControllerToolBarItems(_ controller: DirectoryContentViewController)
 }
 
 final class DirectoryContentViewController: UICollectionViewController {
@@ -37,8 +40,6 @@ final class DirectoryContentViewController: UICollectionViewController {
 
     fileprivate let viewModel: DirectoryContentViewModel
 
-    private let toolbar: UIToolbar
-    private var toolbarBottomConstraint: NSLayoutConstraint?
     private var isFirstLayout = true
 
     override var collectionViewLayout: UICollectionViewFlowLayout {
@@ -49,8 +50,6 @@ final class DirectoryContentViewController: UICollectionViewController {
 
     init(viewModel: DirectoryContentViewModel) {
         self.viewModel = viewModel
-        self.toolbar = UIToolbar.makeToolbar()
-
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 200, height: 64.0)
         layout.minimumLineSpacing = 0
@@ -89,21 +88,12 @@ final class DirectoryContentViewController: UICollectionViewController {
         collectionView.registerFooter(ofClass: CollectionViewFooter.self)
         collectionView.alwaysBounceVertical = true
         collectionView.allowsMultipleSelection = true
-        collectionView.addSubview(toolbar)
-
-        self.toolbarBottomConstraint = toolbar.pinToBottom(of: view)
-        self.toolbarBottomConstraint?.constant = toolbar.bounds.height
         
         syncWithViewModel(false)
     }
-
+ 
     func syncWithViewModel(_ animated: Bool) {
-        if let items = toolbar.items {
-            for barButtonItem in items {
-                barButtonItem.isEnabled = viewModel.isDeleteActionEnabled
-            }
-        }
-
+        
         syncToolbarWithViewModel()
         let editBarButtonItem = viewModel.isEditActionHidden ? nil : UIBarButtonItem(title: viewModel.editActionTitle, style: .plain, target: self, action: #selector(handleEditButtonTap))
         editBarButtonItem?.isEnabled = viewModel.isEditActionEnabled
@@ -124,11 +114,17 @@ final class DirectoryContentViewController: UICollectionViewController {
                 collectionView.deselectItem(at: indexPath, animated: animated)
             }
         }
-
         collectionView.setEditing(editing, animated: animated)
         UIView.animate(withDuration: 0.2) {
-            self.toolbarBottomConstraint?.constant = editing ? 0.0 : self.toolbar.bounds.height
-            collectionView.contentInset.bottom = editing ? self.toolbar.bounds.height : 0.0
+    
+            if (editing) {
+                self.navigationController?.setToolbarHidden(true, animated: false)
+                self.navigationController?.setToolbarHidden(false, animated: false)
+            } else {
+                self.navigationController?.setToolbarHidden(true, animated: false)
+            }
+            
+        //    collectionView.contentInset.bottom = editing ? self.toolbar.bounds.height : 0.0
             collectionView.scrollIndicatorInsets = collectionView.contentInset
             collectionView.layoutIfNeeded()
         }
@@ -137,18 +133,67 @@ final class DirectoryContentViewController: UICollectionViewController {
     }
 
     func syncToolbarWithViewModel() {
-        let selectActionButton = !viewModel.isSelectActionHidden ? UIBarButtonItem(title: viewModel.selectActionTitle, style: .plain, target: self, action: #selector(handleSelectButtonTap)) : nil
-        selectActionButton?.isEnabled = viewModel.isSelectActionEnabled
-        let deleteActionButton = !viewModel.isDeleteActionHidden ? UIBarButtonItem(title: viewModel.deleteActionTitle, style: .plain, target: self, action: #selector(handleDeleteButtonTap)) : nil
+        
+        var leftButton : UIBarButtonItem?
+        var midButton : UIBarButtonItem?
+        
+        print("synToolBarWithViewModel");
+        if viewModel.customAction != nil {
+            let image = UIImage(named: "rename")
+            let customButton = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleCustomButtonTap))
+            customButton.isEnabled = viewModel.isCustomActionEnabled
+            midButton = customButton
+        }
+        
+        if viewModel.customAction2 != nil {
+            let customButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(handleCustomButton2Tap))
+            customButton.isEnabled = viewModel.isCustomAction2Enabled
+            print("custom button 2 is enable " + String(customButton.isEnabled))
+            leftButton = customButton
+        } else {
+            let selectActionButton = !viewModel.isSelectActionHidden ? UIBarButtonItem(title: viewModel.selectActionTitle, style: .plain, target: self, action: #selector(handleSelectButtonTap)) : nil
+            selectActionButton?.isEnabled = viewModel.isSelectActionEnabled
+            leftButton = selectActionButton
+        }
+        
+        //let deleteActionButton = !viewModel.isDeleteActionHidden ? UIBarButtonItem(title: viewModel.deleteActionTitle, style: .plain, target: self, action: #selector(handleDeleteButtonTap)) : nil
+        let deleteActionButton = !viewModel.isDeleteActionHidden ? UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(handleDeleteButtonTap)) : nil
+        
         deleteActionButton?.isEnabled = viewModel.isDeleteActionEnabled
-        toolbar.items = [
-            selectActionButton,
-            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            deleteActionButton
-            ].flatMap { $0 }
+        
+        var items = [UIBarButtonItem]()
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        if midButton != nil {
+            items.append(leftButton!)
+            items.append(spacer)
+            items.append(midButton!)
+            items.append(spacer)
+            items.append(deleteActionButton!)
+        }else{
+            items.append(leftButton!)
+            items.append(spacer)
+            items.append(deleteActionButton!)
+        }
+        
+        toolbarItems = items
     }
 
     // MARK: Actions
+    
+    @objc func handleCustomButtonTap() {
+        viewModel.chooseItems { selectedItems in
+            for item in selectedItems {
+                print(item.name + "." + item.extension)
+            }
+            delegate?.directoryContentViewController(self, didCustomAction: selectedItems)
+        }
+    }
+    
+    @objc func handleCustomButton2Tap() {
+        viewModel.chooseItems { selectedItems in
+            delegate?.directoryContentViewController(self, didCustomAction2: selectedItems)
+        }
+    }
 
     @objc func handleSelectButtonTap() {
         viewModel.chooseItems { selectedItems in
@@ -185,6 +230,7 @@ extension DirectoryContentViewController: DirectoryContentViewModelDelegate {
 
     func directoryViewModelDidChange(_ viewModel: DirectoryContentViewModel) {
         syncWithViewModel(true)
+        delegate?.directoryContentViewControllerToolBarItems(self)
     }
 
     func directoryViewModel(_ viewModel: DirectoryContentViewModel, didSelectItem item: Item<Any>) {
@@ -245,6 +291,7 @@ extension DirectoryContentViewController {
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         viewModel.deselect(at: indexPath)
     }
+
 }
 
 extension DirectoryContentViewController: UISearchResultsUpdating {

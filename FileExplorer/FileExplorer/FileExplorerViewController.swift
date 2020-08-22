@@ -32,6 +32,8 @@ public protocol FileExplorerViewControllerDelegate: class {
     ///
     /// - Parameter controller: The controller object managing the file explorer interface.
     func fileExplorerViewControllerDidFinish(_ controller: FileExplorerViewController)
+    
+    func fileExplorerViewControllerDoSetup(_ controller: FileExplorerViewController)
 
     /// Tells the delegate that the user chose files and/or directories.
     ///
@@ -40,6 +42,10 @@ public protocol FileExplorerViewControllerDelegate: class {
     ///   - controller: The controller object managing the file explorer interface.
     ///   - urls: URLs choosen by users.
     func fileExplorerViewController(_ controller: FileExplorerViewController, didChooseURLs urls: [URL])
+    
+    func fileExplorerViewController(_ controller: FileExplorerViewController, didCustomAction urls: [URL])
+    
+    func fileExplorerViewController(_ controller: FileExplorerViewController, didCustomAction2 urls: [URL])
 }
 
 /// The FileExplorerViewController class manages customizable for displaying, removing and choosing files and directories stored in local storage of the device in your app. A file explorer view controller manages user interactions and delivers the results of those interactions to a delegate object.
@@ -65,6 +71,9 @@ open class FileExplorerViewController: UIViewController {
     
     /// A Boolean value indicating whether to display search bar.
     public var canSearchFile: Bool = false
+    
+    /// A Boolean  value indicate whether to display setting on leftBarButtonItem
+    public var useSetting: Bool = true
 
     /// Filters that determine which files are displayed by file explorer view controller.
     ///
@@ -84,6 +93,9 @@ open class FileExplorerViewController: UIViewController {
     /// FileExplorer combines these providers with the default ones and uses resulting set of providers to present thumbnails and view controllers of files of specified type. Providers provided by the user have higher priority than the default ones.
     public var fileSpecificationProviders: [FileSpecificationProvider.Type]
     public var coordinator: ItemPresentationCoordinator?
+    
+    public var customAction: CustomAction?
+    public var customAction2: CustomAction?
 
     /// Initializes and returns a new file explorer view controller that presents content of directory at specified URL and uses passed file specification providers.
     ///
@@ -116,14 +128,19 @@ open class FileExplorerViewController: UIViewController {
         super.viewWillAppear(animated)
         let fileSpecifications = FileSpecifications(providers: fileSpecificationProviders)
 
-        let actionsConfiguration = ActionsConfiguration(canRemoveFiles: canRemoveFiles,
+        let actionsConfiguration =
+            ActionsConfiguration(canRemoveFiles: canRemoveFiles,
                                                         canRemoveDirectories: canRemoveDirectories,
                                                         canChooseFiles: canChooseFiles,
                                                         canChooseDirectories: canChooseDirectories,
                                                         allowsMultipleSelection: allowsMultipleSelection,
-                                                        canSearchFile: canSearchFile)
+                                                        canSearchFile: canSearchFile,
+                                                        useSetting: useSetting)
         let filteringConfiguration = FilteringConfiguration(fileFilters: fileFilters, ignoredFileFilters: ignoredFileFilters)
-        let configuration = Configuration(actionsConfiguration: actionsConfiguration, filteringConfiguration: filteringConfiguration)
+        let customActions = CustomActions()
+        customActions.action1 = customAction
+        customActions.action2 = customAction2
+        let configuration = Configuration(actionsConfiguration: actionsConfiguration, filteringConfiguration: filteringConfiguration, customActions: customActions)
 
         if let item = Item<Any>.at(initialDirectoryURL, isDirectory: true) {
             coordinator!.start(item: item, fileSpecifications: fileSpecifications, configuration: configuration, animated: false)
@@ -140,10 +157,16 @@ open class FileExplorerViewController: UIViewController {
 }
 
 
+
 extension FileExplorerViewController: ItemPresentationCoordinatorDelegate {
     func itemPresentationCoordinatorDidFinish(_ coordinator: ItemPresentationCoordinator) {
         dismiss(animated: true, completion: nil)
         delegate?.fileExplorerViewControllerDidFinish(self)
+    }
+    
+    func itemPresentationCoordinatorDoSetup(_ coordinator: ItemPresentationCoordinator) {
+        dismiss(animated: true, completion: nil)
+        delegate?.fileExplorerViewControllerDoSetup(self)
     }
     
     func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseItems items: [Item<Any>]) {
@@ -151,4 +174,17 @@ extension FileExplorerViewController: ItemPresentationCoordinatorDelegate {
         let urls = items.map { $0.url }
         delegate?.fileExplorerViewController(self, didChooseURLs: urls)
     }
+    
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction items: [Item<Any>]) {
+        dismiss(animated: true, completion: nil)
+        let urls = items.map { $0.url }
+        delegate?.fileExplorerViewController(self, didCustomAction: urls)
+    }
+    
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction2 items: [Item<Any>]) {
+        dismiss(animated: true, completion: nil)
+        let urls = items.map { $0.url }
+        delegate?.fileExplorerViewController(self, didCustomAction2: urls)
+    }
+    
 }

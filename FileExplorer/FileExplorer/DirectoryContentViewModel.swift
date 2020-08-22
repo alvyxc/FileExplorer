@@ -84,7 +84,7 @@ final class DirectoryContentViewModel {
     }
     
     var editActionTitle: String {
-        return isEditing ? NSLocalizedString("Cancel", comment: "") : NSLocalizedString("Select", comment: "")
+        return isEditing ? NSLocalizedString("Cancel", comment: "") : NSLocalizedString("Edit", comment: "")
     }
     
     var searchQuery: String? = "" {
@@ -102,6 +102,28 @@ final class DirectoryContentViewModel {
             indexPaths.append(index(for: item))
         }
         return indexPaths
+    }
+    
+    var isCustomActionEnabled: Bool {
+        guard customAction != nil else { return false }
+        let itemsRequired = customAction?.itemsRequired
+        let inProgress = customAction?.isActionInProgress
+        if selectedItems.count >= itemsRequired! && !inProgress! {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    var isCustomAction2Enabled: Bool {
+        guard customAction2 != nil else { return false }
+        let itemsRequired = customAction2?.itemsRequired
+        let inProgress = customAction2?.isActionInProgress
+        if selectedItems.count >= itemsRequired! && !inProgress! {
+            return true
+        } else {
+            return false
+        }
     }
 
     var isSelectionEnabled: Bool {
@@ -154,6 +176,22 @@ final class DirectoryContentViewModel {
     var selectActionTitle: String {
         return NSLocalizedString("Choose", comment: "")
     }
+    
+    var customAction: CustomAction? {
+        return self.configuration.customActions.action1
+    }
+    
+    var customActionInProgress: Bool? {
+        return self.configuration.customActions.action1?.isActionInProgress
+    }
+    
+    var customAction2: CustomAction? {
+        return self.configuration.customActions.action2
+    }
+    
+    var customAction2InProgress: Bool? {
+         return self.configuration.customActions.action1?.isActionInProgress
+    }
 
     private var selectedItems = Items()
     private var allItems: Items
@@ -180,6 +218,7 @@ final class DirectoryContentViewModel {
 
     func select(at indexPath: IndexPath) {
         let item = self.item(for: indexPath)
+        print("select " + item.name)
         if isEditing {
             selectedItems.append(item)
         } else {
@@ -190,6 +229,7 @@ final class DirectoryContentViewModel {
     
     func deselect(at indexPath: IndexPath) {
         let item = self.item(for: indexPath)
+         print("deselect " + item.name)
         if isEditing {
             if let index = selectedItems.index(where: { $0 == item }) {
                 selectedItems.remove(at: index)

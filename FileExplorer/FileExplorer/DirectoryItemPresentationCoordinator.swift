@@ -29,11 +29,20 @@ protocol DirectoryItemPresentationCoordinatorDelegate: class {
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didSelectItem item: Item<Any>)
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didSelectItemDetails item: Item<Any>)
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didChooseItems items: [Item<Any>])
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction items: [Item<Any>])
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction2 items: [Item<Any>])
     func directoryItemPresentationCoordinatorDidFinish(_ coordinator: DirectoryItemPresentationCoordinator)
+    func directoryItemPresentationCoordinatorDoSetup(_ coordinator: DirectoryItemPresentationCoordinator)
+}
+
+protocol DirectoryItemPresentationCoordinatorToolBarItemsDelegate: class {
+    func directoryItemPresentationCoordinatorToolBarItems(items: [UIBarButtonItem])
 }
 
 final class DirectoryItemPresentationCoordinator {
     weak var delegate: DirectoryItemPresentationCoordinatorDelegate?
+    
+    weak var toolBarItemsDelegate: DirectoryItemPresentationCoordinatorToolBarItemsDelegate?
 
     fileprivate weak var directoryViewController: DirectoryViewController?
     fileprivate var configuration: Configuration
@@ -52,9 +61,11 @@ final class DirectoryItemPresentationCoordinator {
     }
     
     func start(directoryURL: URL, animated: Bool) {
-        let finishButtonHidden = navigationController?.viewControllers.count != 0
-
+        //let finishButtonHidden = navigationController?.viewControllers.count != 0
+        let finishButtonHidden = true
+        
         if directoryURL.hasDirectoryPath {
+            
             let viewController = LoadingViewController<Any>.make(item: Item<Any>.directory(at: directoryURL)) { [weak self] loadedItem in
                 guard let strongSelf = self else { return nil }
                 let loadedItem = loadedItem.cast() as LoadedItem<[Item<Any>]>
@@ -65,6 +76,8 @@ final class DirectoryItemPresentationCoordinator {
                 strongSelf.directoryViewController = directoryViewController
                 return directoryViewController
             }
+            
+            self.toolBarItemsDelegate = viewController
             navigationController?.pushViewController(viewController, animated: animated)
 
         } else {
@@ -76,23 +89,43 @@ final class DirectoryItemPresentationCoordinator {
 }
 
 extension DirectoryItemPresentationCoordinator: DirectoryViewControllerDelegate {
+    
+
     func directoryViewController(_ controller: DirectoryViewController, didSelectItem item: Item<Any>) {
-        directoryViewController?.isSearchControllerActive = false
+        //directoryViewController?.isSearchControllerActive = false
         delegate?.directoryItemPresentationCoordinator(self, didSelectItem: item)
     }
 
     func directoryViewController(_ controller: DirectoryViewController, didSelectItemDetails item: Item<Any>) {
-        directoryViewController?.isSearchControllerActive = false
+       // directoryViewController?.isSearchControllerActive = false
         delegate?.directoryItemPresentationCoordinator(self, didSelectItemDetails: item)
     }
     
     func directoryViewController(_ controller: DirectoryViewController, didChooseItems items: [Item<Any>]) {
         delegate?.directoryItemPresentationCoordinator(self, didChooseItems: items)
     }
+
+    func directoryViewController(_ controller: DirectoryViewController, didCustomAction items: [Item<Any>]) {
+        delegate?.directoryItemPresentationCoordinator(self, didCustomAction: items)
+    }
+    
+    func directoryViewController(_ controller: DirectoryViewController, didCustomAction2 items: [Item<Any>]) {
+        delegate?.directoryItemPresentationCoordinator(self, didCustomAction2: items)
+    }
     
     func directoryViewControllerDidFinish(_ controller: DirectoryViewController) {
         delegate?.directoryItemPresentationCoordinatorDidFinish(self)
     }
+    
+    func directoryViewControllerDoSetup(_ controller: DirectoryViewController) {
+        delegate?.directoryItemPresentationCoordinatorDoSetup(self)
+    }
+    
+    func directoryViewControllerToolBarItems(_ controller: DirectoryViewController) {
+        toolBarItemsDelegate?.directoryItemPresentationCoordinatorToolBarItems(items: controller.toolbarItems!)
+    }
+    
+    
 }
 
 extension DirectoryItemPresentationCoordinator: ErrorViewControllerDelegate {

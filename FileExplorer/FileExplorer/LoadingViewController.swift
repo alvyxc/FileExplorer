@@ -26,6 +26,7 @@
 import UIKit
 
 final class LoadingViewController<T>: UIViewController {
+    
     init(load: @escaping (@escaping (Result<LoadedItem<T>>) -> ()) -> (), builder: @escaping (LoadedItem<T>) -> UIViewController?) {
         super.init(nibName: nil, bundle: nil)
         
@@ -48,6 +49,7 @@ final class LoadingViewController<T>: UIViewController {
                 strongSelf.navigationItem.leftBarButtonItems = contentViewController.navigationItem.leftBarButtonItems
                 strongSelf.extendedLayoutIncludesOpaqueBars = contentViewController.extendedLayoutIncludesOpaqueBars
                 strongSelf.edgesForExtendedLayout = contentViewController.edgesForExtendedLayout
+                strongSelf.toolbarItems = contentViewController.toolbarItems
             case .error(let error):
                 UIAlertController.presentAlert(for: error, in: strongSelf)
             }
@@ -75,4 +77,12 @@ extension LoadingViewController {
             fileService.load(item: item, completionBlock: completionBlock)
         }, builder: builder)
     }
+}
+
+extension LoadingViewController: DirectoryItemPresentationCoordinatorToolBarItemsDelegate {
+    func directoryItemPresentationCoordinatorToolBarItems(items: [UIBarButtonItem]) {
+        self.toolbarItems = items
+    }
+    
+    
 }
