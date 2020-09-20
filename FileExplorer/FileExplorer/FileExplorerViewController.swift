@@ -43,9 +43,10 @@ public protocol FileExplorerViewControllerDelegate: class {
     ///   - urls: URLs choosen by users.
     func fileExplorerViewController(_ controller: FileExplorerViewController, didChooseURLs urls: [URL])
     
-    func fileExplorerViewController(_ controller: FileExplorerViewController, didCustomAction urls: [URL])
+    func fileExplorerViewController(_ controller: FileExplorerViewController, didShareAction urls: [URL])
     
-    func fileExplorerViewController(_ controller: FileExplorerViewController, didCustomAction2 urls: [URL])
+    func fileExplorerViewController(_ controller: FileExplorerViewController, didRenameAction urls: [URL])
+    
 }
 
 /// The FileExplorerViewController class manages customizable for displaying, removing and choosing files and directories stored in local storage of the device in your app. A file explorer view controller manages user interactions and delivers the results of those interactions to a delegate object.
@@ -94,8 +95,8 @@ open class FileExplorerViewController: UIViewController {
     public var fileSpecificationProviders: [FileSpecificationProvider.Type]
     public var coordinator: ItemPresentationCoordinator?
     
-    public var customAction: CustomAction?
-    public var customAction2: CustomAction?
+    public var renameAction: CustomAction?
+    public var shareAction: CustomAction?
 
     /// Initializes and returns a new file explorer view controller that presents content of directory at specified URL and uses passed file specification providers.
     ///
@@ -138,8 +139,8 @@ open class FileExplorerViewController: UIViewController {
                                                         useSetting: useSetting)
         let filteringConfiguration = FilteringConfiguration(fileFilters: fileFilters, ignoredFileFilters: ignoredFileFilters)
         let customActions = CustomActions()
-        customActions.action1 = customAction
-        customActions.action2 = customAction2
+        customActions.renameAction = renameAction
+        customActions.shareAction = shareAction
         let configuration = Configuration(actionsConfiguration: actionsConfiguration, filteringConfiguration: filteringConfiguration, customActions: customActions)
 
         if let item = Item<Any>.at(initialDirectoryURL, isDirectory: true) {
@@ -150,13 +151,15 @@ open class FileExplorerViewController: UIViewController {
  
     }
     
+    public func refresh() {
+        NotificationCenter.default.post(name: Notification.Name.RefreshItems, object: nil)
+    }
+    
     override public func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         coordinator!.stop(false)
     }
 }
-
-
 
 extension FileExplorerViewController: ItemPresentationCoordinatorDelegate {
     func itemPresentationCoordinatorDidFinish(_ coordinator: ItemPresentationCoordinator) {
@@ -175,16 +178,17 @@ extension FileExplorerViewController: ItemPresentationCoordinatorDelegate {
         delegate?.fileExplorerViewController(self, didChooseURLs: urls)
     }
     
-    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction items: [Item<Any>]) {
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didShareAction items: [Item<Any>]) {
         dismiss(animated: true, completion: nil)
         let urls = items.map { $0.url }
-        delegate?.fileExplorerViewController(self, didCustomAction: urls)
+        delegate?.fileExplorerViewController(self, didShareAction: urls)
     }
     
-    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction2 items: [Item<Any>]) {
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didRenameAction items: [Item<Any>]) {
         dismiss(animated: true, completion: nil)
         let urls = items.map { $0.url }
-        delegate?.fileExplorerViewController(self, didCustomAction2: urls)
+        delegate?.fileExplorerViewController(self, didRenameAction: urls)
     }
     
+
 }

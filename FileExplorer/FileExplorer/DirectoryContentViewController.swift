@@ -30,8 +30,8 @@ protocol DirectoryContentViewControllerDelegate: class {
     func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItem item: Item<Any>)
     func directoryContentViewController(_ controller: DirectoryContentViewController, didSelectItemDetails item: Item<Any>)
     func directoryContentViewController(_ controller: DirectoryContentViewController, didChooseItems items: [Item<Any>])
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction items: [Item<Any>])
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction2 items: [Item<Any>])
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didShareAction items: [Item<Any>])
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didRenameAction items: [Item<Any>])
     func directoryContentViewControllerToolBarItems(_ controller: DirectoryContentViewController)
 }
 
@@ -91,6 +91,14 @@ final class DirectoryContentViewController: UICollectionViewController {
         
         syncWithViewModel(false)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if (viewModel.isEditing) {
+            self.navigationController?.setToolbarHidden(false, animated: false)
+        } else {
+            self.navigationController?.setToolbarHidden(true, animated: false)
+        }
+    }
  
     func syncWithViewModel(_ animated: Bool) {
         
@@ -118,7 +126,6 @@ final class DirectoryContentViewController: UICollectionViewController {
         UIView.animate(withDuration: 0.2) {
     
             if (editing) {
-                self.navigationController?.setToolbarHidden(true, animated: false)
                 self.navigationController?.setToolbarHidden(false, animated: false)
             } else {
                 self.navigationController?.setToolbarHidden(true, animated: false)
@@ -136,27 +143,20 @@ final class DirectoryContentViewController: UICollectionViewController {
         
         var leftButton : UIBarButtonItem?
         var midButton : UIBarButtonItem?
+  
+        if viewModel.shareAction != nil {
+               let customButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(handleCustomButton2Tap))
+               customButton.isEnabled = viewModel.isShareActionEnabled
+               leftButton = customButton
+           }
         
-        print("synToolBarWithViewModel");
-        if viewModel.customAction != nil {
+        if viewModel.renameAction != nil {
             let image = UIImage(named: "rename")
             let customButton = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleCustomButtonTap))
-            customButton.isEnabled = viewModel.isCustomActionEnabled
+            customButton.isEnabled = viewModel.isRenameActionEnabled
             midButton = customButton
         }
-        
-        if viewModel.customAction2 != nil {
-            let customButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(handleCustomButton2Tap))
-            customButton.isEnabled = viewModel.isCustomAction2Enabled
-            print("custom button 2 is enable " + String(customButton.isEnabled))
-            leftButton = customButton
-        } else {
-            let selectActionButton = !viewModel.isSelectActionHidden ? UIBarButtonItem(title: viewModel.selectActionTitle, style: .plain, target: self, action: #selector(handleSelectButtonTap)) : nil
-            selectActionButton?.isEnabled = viewModel.isSelectActionEnabled
-            leftButton = selectActionButton
-        }
-        
-        //let deleteActionButton = !viewModel.isDeleteActionHidden ? UIBarButtonItem(title: viewModel.deleteActionTitle, style: .plain, target: self, action: #selector(handleDeleteButtonTap)) : nil
+    
         let deleteActionButton = !viewModel.isDeleteActionHidden ? UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(handleDeleteButtonTap)) : nil
         
         deleteActionButton?.isEnabled = viewModel.isDeleteActionEnabled
@@ -177,24 +177,21 @@ final class DirectoryContentViewController: UICollectionViewController {
         
         toolbarItems = items
     }
-
-    // MARK: Actions
     
-    @objc func handleCustomButtonTap() {
-        viewModel.chooseItems { selectedItems in
-            for item in selectedItems {
-                print(item.name + "." + item.extension)
-            }
-            delegate?.directoryContentViewController(self, didCustomAction: selectedItems)
-        }
-    }
+    // MARK: Actions
     
     @objc func handleCustomButton2Tap() {
         viewModel.chooseItems { selectedItems in
-            delegate?.directoryContentViewController(self, didCustomAction2: selectedItems)
+            delegate?.directoryContentViewController(self, didShareAction: selectedItems)
         }
     }
-
+    
+    @objc func handleCustomButtonTap() {
+        viewModel.chooseItems { selectedItems in
+            delegate?.directoryContentViewController(self, didRenameAction: selectedItems)
+        }
+    }
+    
     @objc func handleSelectButtonTap() {
         viewModel.chooseItems { selectedItems in
             delegate?.directoryContentViewController(self, didChooseItems: selectedItems)
@@ -203,7 +200,7 @@ final class DirectoryContentViewController: UICollectionViewController {
 
     @objc func handleDeleteButtonTap() {
         showLoadingIndicator()
-        viewModel.deleteItems(at: viewModel.indexPathsOfSelectedCells) { [weak self] result in
+        viewModel.deleteItems() { [weak self] result in
             guard let strongSelf = self else { return }
             strongSelf.hideLoadingIndicator()
             

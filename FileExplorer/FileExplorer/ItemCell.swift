@@ -278,12 +278,18 @@ final class CollectionViewHeader: UICollectionReusableView {
     var sortModeChangeAction: (SortMode) -> Void = { _ in }
     
     override init(frame: CGRect) {
-        segmentedControl = UISegmentedControl(items: ["Name", "Date"])
+        segmentedControl = UISegmentedControl(items: [LocalizationUtil.getLocationStr(key: "Scan_SortBy_Name"), LocalizationUtil.getLocationStr(key: "Scan_SortBy_Date")])
         super.init(frame: frame)
         segmentedControl.sizeToFit()
         segmentedControl.frame.size = CGSize(width: 160.0, height: segmentedControl.bounds.size.height)
         segmentedControl.autoresizingMask = []
         segmentedControl.addTarget(self, action: #selector(handleSegmentedControlValueChanged), for: .valueChanged)
+        if #available(iOS 13.0, *) {
+           segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+            segmentedControl.selectedSegmentTintColor = UIColor.magenta
+        } else {
+            segmentedControl.tintColor = UIColor.magenta
+        }
         addSubview(segmentedControl)
         sortMode = .name
     }

@@ -31,8 +31,8 @@ protocol ItemPresentationCoordinatorDelegate: class {
     func itemPresentationCoordinatorDidFinish(_ coordinator: ItemPresentationCoordinator)
     func itemPresentationCoordinatorDoSetup(_ coordinator: ItemPresentationCoordinator)
     func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didChooseItems items: [Item<Any>])
-    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction items: [Item<Any>])
-    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didCustomAction2 items: [Item<Any>])
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didShareAction items: [Item<Any>])
+    func itemPresentationCoordinator(_ coordinator: ItemPresentationCoordinator, didRenameAction items: [Item<Any>])
 }
 
 open class ItemPresentationCoordinator {
@@ -55,6 +55,7 @@ open class ItemPresentationCoordinator {
         switch item.type {
         case .file:
             let coordinator = FileItemPresentationCoordinator(navigationController: navigationController, item: item, fileSpecifications: fileSpecifications)
+            coordinator.delegate = self
             coordinator.start(animated)
             childCoordinators.append(coordinator)
         case .directory:
@@ -68,6 +69,12 @@ open class ItemPresentationCoordinator {
     func stop(_ animated: Bool) {
         childCoordinators.removeAll()
         self.navigationController?.setViewControllers([UIViewController](), animated: animated)
+    }
+}
+
+extension ItemPresentationCoordinator: FileItemPresentationCoordinatorDelegate {
+    func fileItemPresentationCoordinator(_ coordinator: FileItemPresentationCoordinator, didShareAction items: [Item<Any>]){
+        delegate?.itemPresentationCoordinator(self, didShareAction: items)
     }
 }
 
@@ -87,12 +94,12 @@ extension ItemPresentationCoordinator: DirectoryItemPresentationCoordinatorDeleg
         delegate?.itemPresentationCoordinator(self, didChooseItems: items)
     }
     
-    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction items: [Item<Any>]) {
-        delegate?.itemPresentationCoordinator(self, didCustomAction: items)
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didShareAction items: [Item<Any>]) {
+        delegate?.itemPresentationCoordinator(self, didShareAction: items)
     }
     
-    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction2 items: [Item<Any>]) {
-        delegate?.itemPresentationCoordinator(self, didCustomAction2: items)
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didRenameAction items: [Item<Any>]) {
+        delegate?.itemPresentationCoordinator(self, didRenameAction: items)
     }
     
     func directoryItemPresentationCoordinatorDidFinish(_ coordinator: DirectoryItemPresentationCoordinator) {

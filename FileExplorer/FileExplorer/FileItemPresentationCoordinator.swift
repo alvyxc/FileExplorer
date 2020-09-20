@@ -28,11 +28,17 @@ import UIKit
 import AVKit
 import AVFoundation
 
+protocol FileItemPresentationCoordinatorDelegate : class {
+    func fileItemPresentationCoordinator(_ coordinator: FileItemPresentationCoordinator, didShareAction items: [Item<Any>])
+
+}
+
 final class FileItemPresentationCoordinator {
     fileprivate weak var navigationController: UINavigationController?
     fileprivate let fileService: FileService
     fileprivate let fileSpecifications: FileSpecifications
     fileprivate let item: Item<Any>
+    weak var delegate: FileItemPresentationCoordinatorDelegate?
 
     init(navigationController: UINavigationController, item: Item<Any>, fileSpecifications: FileSpecifications, fileService: FileService = LocalStorageFileService()) {
         self.navigationController = navigationController
@@ -79,9 +85,7 @@ final class FileItemPresentationCoordinator {
 
 extension FileItemPresentationCoordinator: ActionsViewControllerDelegate {
     func actionsViewControllerDidRequestShare(_ controller: ActionsViewController) {
-        let activityItem = UIActivityItemProvider(placeholderItem: item.url)
-        let activityViewController = UIActivityViewController(activityItems: [activityItem], applicationActivities: nil)
-        navigationController?.present(activityViewController, animated: true, completion: nil)
+        delegate?.fileItemPresentationCoordinator(self, didShareAction: [item])
     }
 
     func actionsViewControllerDidRequestRemoval(_ controller: ActionsViewController) {

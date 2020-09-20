@@ -114,11 +114,11 @@ extension FileViewModel {
     fileprivate static func string(for fileAttributeKey: FileAttributeKey) -> String? {
         switch fileAttributeKey {
         case FileAttributeKey.size:
-            return NSLocalizedString("Size", comment: "")
+            return LocalizationUtil.getLocationStr(key: "Scan_Document_Size")
         case FileAttributeKey.creationDate:
-            return NSLocalizedString("Created", comment: "")
+            return LocalizationUtil.getLocationStr(key: "Scan_Document_Created")
         case FileAttributeKey.modificationDate:
-            return NSLocalizedString("Modified", comment: "")
+            return LocalizationUtil.getLocationStr(key: "Scan_Document_Modified")
         case FileAttributeKey.type:
             return NSLocalizedString("Kind", comment: "")
         default:

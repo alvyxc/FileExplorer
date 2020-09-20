@@ -62,7 +62,7 @@ final class DirectoryContentViewModel {
     
     var title: String {
         get {
-            return url.lastPathComponent
+            return LocalizationUtil.getLocationStr(key: "Scan_Documents")
         }
     }
 
@@ -84,7 +84,7 @@ final class DirectoryContentViewModel {
     }
     
     var editActionTitle: String {
-        return isEditing ? NSLocalizedString("Cancel", comment: "") : NSLocalizedString("Edit", comment: "")
+        return isEditing ? LocalizationUtil.getLocationStr(key: "Scan_Cancel") : LocalizationUtil.getLocationStr(key: "Scan_Edit")
     }
     
     var searchQuery: String? = "" {
@@ -104,26 +104,29 @@ final class DirectoryContentViewModel {
         return indexPaths
     }
     
-    var isCustomActionEnabled: Bool {
-        guard customAction != nil else { return false }
-        let itemsRequired = customAction?.itemsRequired
-        let inProgress = customAction?.isActionInProgress
-        if selectedItems.count >= itemsRequired! && !inProgress! {
+    
+    var isShareActionEnabled: Bool {
+        guard shareAction != nil else { return false }
+        let minItemsCount = shareAction?.minItemsRequired
+        let maxItemsCount = shareAction?.maxItemsAllowed
+        let inProgress = shareAction?.isActionInProgress
+        if selectedItems.count >= minItemsCount! && selectedItems.count <= maxItemsCount! && !inProgress! {
             return true
         } else {
             return false
         }
     }
     
-    var isCustomAction2Enabled: Bool {
-        guard customAction2 != nil else { return false }
-        let itemsRequired = customAction2?.itemsRequired
-        let inProgress = customAction2?.isActionInProgress
-        if selectedItems.count >= itemsRequired! && !inProgress! {
-            return true
-        } else {
-            return false
-        }
+    var isRenameActionEnabled: Bool {
+        guard renameAction != nil else { return false }
+        let minItemsCount = renameAction?.minItemsRequired
+         let maxItemsCount = renameAction?.maxItemsAllowed
+         let inProgress = renameAction?.isActionInProgress
+         if selectedItems.count >= minItemsCount! && selectedItems.count <= maxItemsCount! && !inProgress! {
+             return true
+         } else {
+             return false
+         }
     }
 
     var isSelectionEnabled: Bool {
@@ -177,20 +180,20 @@ final class DirectoryContentViewModel {
         return NSLocalizedString("Choose", comment: "")
     }
     
-    var customAction: CustomAction? {
-        return self.configuration.customActions.action1
+    var renameAction: CustomAction? {
+        return self.configuration.customActions.renameAction
     }
     
-    var customActionInProgress: Bool? {
-        return self.configuration.customActions.action1?.isActionInProgress
+    var renameActionInProgress: Bool? {
+        return self.configuration.customActions.renameAction?.isActionInProgress
     }
     
-    var customAction2: CustomAction? {
-        return self.configuration.customActions.action2
+    var shareAction: CustomAction? {
+        return self.configuration.customActions.shareAction
     }
     
-    var customAction2InProgress: Bool? {
-         return self.configuration.customActions.action1?.isActionInProgress
+    var shareActionInProgress: Bool? {
+        return self.configuration.customActions.shareAction?.isActionInProgress
     }
 
     private var selectedItems = Items()
@@ -214,6 +217,18 @@ final class DirectoryContentViewModel {
         self.itemsToDisplay = DirectoryContentViewModel.itemsWithAppliedFilterAndSortCriterias(searchQuery: "", sortMode: sortMode, items: self.allItems)
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleItemsDeletedNotification(_:)), name: Notification.Name.ItemsDeleted, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleRefreshNotification(_:)), name: Notification.Name.RefreshItems, object: nil)
+    }
+    
+    func reInitItems(items: LoadedItem<[Item<Any>]>) {
+        let filteringConfiguration = configuration.filteringConfiguration
+        self.allItems = items.resource.filter {  filteringConfiguration.fileFilters.count == 0 || filteringConfiguration.fileFilters.matchesItem($0) }
+        self.allItems = self.allItems.filter { filteringConfiguration.ignoredFileFilters.count == 0 || !filteringConfiguration.ignoredFileFilters.matchesItem($0) }
+        self.itemsToDisplay = DirectoryContentViewModel.itemsWithAppliedFilterAndSortCriterias(searchQuery: "", sortMode: sortMode, items: self.allItems)
+        for i in itemsToDisplay {
+            print("refresh i is " + i.name)
+        }
+
     }
 
     func select(at indexPath: IndexPath) {
@@ -221,10 +236,10 @@ final class DirectoryContentViewModel {
         print("select " + item.name)
         if isEditing {
             selectedItems.append(item)
+            delegate?.directoryViewModelDidChange(self)
         } else {
             delegate?.directoryViewModel(self, didSelectItem: item)
         }
-        delegate?.directoryViewModelDidChange(self)
     }
     
     func deselect(at indexPath: IndexPath) {
@@ -234,15 +249,15 @@ final class DirectoryContentViewModel {
             if let index = selectedItems.index(where: { $0 == item }) {
                 selectedItems.remove(at: index)
             }
+            delegate?.directoryViewModelDidChange(self)
         } else {
             delegate?.directoryViewModel(self, didSelectItem: item)
         }
-        delegate?.directoryViewModelDidChange(self)
+        
     }
 
-    func deleteItems(at indexPaths: [IndexPath], completionBlock: @escaping (Result<Void>) -> Void) {
-        let items = indexPaths.flatMap { item(for: $0) }
-        fileService.delete(items: items) { result, removedItems, itemsNotRemovedDueToFailure in
+    func deleteItems(completionBlock: @escaping (Result<Void>) -> Void) {
+        fileService.delete(items: selectedItems) { result, removedItems, itemsNotRemovedDueToFailure in
             completionBlock(result)
             self.delegate?.directoryViewModelDidChange(self)
         }
@@ -274,6 +289,7 @@ final class DirectoryContentViewModel {
     
     private func index(for item: Item<Any>) -> IndexPath {
         for (i, iterItem) in allItems.enumerated() {
+            print("index " + String(i) + " item " + iterItem.name)
             if iterItem == item {
                 return IndexPath(item: i, section: 0)
             }
@@ -310,6 +326,26 @@ final class DirectoryContentViewModel {
         }
 
         delegate?.directoryViewModelDidChangeItemsList(self)
+    }
+    
+    @objc
+    private func handleRefreshNotification(_ notification: Notification) {
+        let savedDirectoryURL = self.url
+        
+        let item = Item<Any>.directory(at: savedDirectoryURL)
+        let completionHandler: (Result<LoadedItem<Any>>) -> () = { result in
+            switch result {
+            case .success(let loadedItem):
+                let loadedItem = loadedItem.cast() as LoadedItem<[Item<Any>]>
+                self.reInitItems(items: loadedItem)
+                self.isEditing = false;
+                self.delegate?.directoryViewModelDidChangeItemsList(self)
+                self.delegate?.directoryViewModelDidChange(self)
+            case .error(_):
+                print("error")
+            }
+        }
+        fileService.load(item: item!, completionBlock: completionHandler)
     }
 }
 

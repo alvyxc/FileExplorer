@@ -29,8 +29,8 @@ protocol DirectoryItemPresentationCoordinatorDelegate: class {
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didSelectItem item: Item<Any>)
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didSelectItemDetails item: Item<Any>)
     func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didChooseItems items: [Item<Any>])
-    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction items: [Item<Any>])
-    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didCustomAction2 items: [Item<Any>])
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didShareAction items: [Item<Any>])
+    func directoryItemPresentationCoordinator(_ coordinator: DirectoryItemPresentationCoordinator, didRenameAction items: [Item<Any>])
     func directoryItemPresentationCoordinatorDidFinish(_ coordinator: DirectoryItemPresentationCoordinator)
     func directoryItemPresentationCoordinatorDoSetup(_ coordinator: DirectoryItemPresentationCoordinator)
 }
@@ -52,6 +52,8 @@ final class DirectoryItemPresentationCoordinator {
     
     private weak var navigationController: UINavigationController?
     private weak var pushedViewController: UIViewController?
+    
+    var savedDirectoryURL : URL?
 
     init(navigationController: UINavigationController, fileSpecifications: FileSpecifications, configuration: Configuration, fileService: FileService = LocalStorageFileService()) {
         self.navigationController = navigationController
@@ -65,7 +67,7 @@ final class DirectoryItemPresentationCoordinator {
         let finishButtonHidden = true
         
         if directoryURL.hasDirectoryPath {
-            
+            savedDirectoryURL = directoryURL
             let viewController = LoadingViewController<Any>.make(item: Item<Any>.directory(at: directoryURL)) { [weak self] loadedItem in
                 guard let strongSelf = self else { return nil }
                 let loadedItem = loadedItem.cast() as LoadedItem<[Item<Any>]>
@@ -86,6 +88,7 @@ final class DirectoryItemPresentationCoordinator {
             navigationController?.pushViewController(viewController, animated: animated)
         }
     }
+    
 }
 
 extension DirectoryItemPresentationCoordinator: DirectoryViewControllerDelegate {
@@ -104,15 +107,15 @@ extension DirectoryItemPresentationCoordinator: DirectoryViewControllerDelegate 
     func directoryViewController(_ controller: DirectoryViewController, didChooseItems items: [Item<Any>]) {
         delegate?.directoryItemPresentationCoordinator(self, didChooseItems: items)
     }
+    
+    func directoryViewController(_ controller: DirectoryViewController, didShareAction items: [Item<Any>]) {
+        delegate?.directoryItemPresentationCoordinator(self, didShareAction: items)
+    }
+    
+    func directoryViewController(_ controller: DirectoryViewController, didRenameAction items: [Item<Any>]) {
+        delegate?.directoryItemPresentationCoordinator(self, didRenameAction: items)
+    }
 
-    func directoryViewController(_ controller: DirectoryViewController, didCustomAction items: [Item<Any>]) {
-        delegate?.directoryItemPresentationCoordinator(self, didCustomAction: items)
-    }
-    
-    func directoryViewController(_ controller: DirectoryViewController, didCustomAction2 items: [Item<Any>]) {
-        delegate?.directoryItemPresentationCoordinator(self, didCustomAction2: items)
-    }
-    
     func directoryViewControllerDidFinish(_ controller: DirectoryViewController) {
         delegate?.directoryItemPresentationCoordinatorDidFinish(self)
     }
@@ -124,7 +127,6 @@ extension DirectoryItemPresentationCoordinator: DirectoryViewControllerDelegate 
     func directoryViewControllerToolBarItems(_ controller: DirectoryViewController) {
         toolBarItemsDelegate?.directoryItemPresentationCoordinatorToolBarItems(items: controller.toolbarItems!)
     }
-    
     
 }
 

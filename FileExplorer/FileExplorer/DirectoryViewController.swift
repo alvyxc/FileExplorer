@@ -64,8 +64,8 @@ protocol DirectoryViewControllerDelegate: class {
     func directoryViewController(_ controller: DirectoryViewController, didSelectItem item: Item<Any>)
     func directoryViewController(_ controller: DirectoryViewController, didSelectItemDetails item: Item<Any>)
     func directoryViewController(_ controller: DirectoryViewController, didChooseItems items: [Item<Any>])
-    func directoryViewController(_ controller: DirectoryViewController, didCustomAction items: [Item<Any>])
-    func directoryViewController(_ controller: DirectoryViewController, didCustomAction2 items: [Item<Any>])
+    func directoryViewController(_ controller: DirectoryViewController, didShareAction items: [Item<Any>])
+    func directoryViewController(_ controller: DirectoryViewController, didRenameAction items: [Item<Any>])
     func directoryViewControllerToolBarItems(_ controller: DirectoryViewController)
     func directoryViewControllerDidFinish(_ controller: DirectoryViewController)
     func directoryViewControllerDoSetup(_ controller: DirectoryViewController)
@@ -191,12 +191,12 @@ extension DirectoryViewController: DirectoryContentViewControllerDelegate {
         delegate?.directoryViewController(self, didChooseItems: items)
     }
     
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction items: [Item<Any>]) {
-        delegate?.directoryViewController(self, didCustomAction: items)
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didShareAction items: [Item<Any>]) {
+        delegate?.directoryViewController(self, didShareAction: items)
     }
 
-    func directoryContentViewController(_ controller: DirectoryContentViewController, didCustomAction2 items: [Item<Any>]) {
-        delegate?.directoryViewController(self, didCustomAction2: items)
+    func directoryContentViewController(_ controller: DirectoryContentViewController, didRenameAction items: [Item<Any>]) {
+        delegate?.directoryViewController(self, didRenameAction: items)
     }
     
     func directoryContentViewControllerToolBarItems(_ controller: DirectoryContentViewController) {

@@ -76,6 +76,7 @@ extension UIViewController {
         get {
             return activeNavigationItem?.title
         }
+  
         set(newValue) {
             navigationItem.title = newValue
             activeNavigationItem?.title = newValue

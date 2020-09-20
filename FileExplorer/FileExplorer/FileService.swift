@@ -40,6 +40,7 @@ enum FileServiceError: Error {
 
 extension Notification.Name {
     static let ItemsDeleted = Notification.Name("ItemsDeleted")
+    static let RefreshItems = Notification.Name("RefreshItems")
 }
 
 

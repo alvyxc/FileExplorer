@@ -53,6 +53,7 @@ final class ActionsViewController: UIViewController {
         extendedLayoutIncludesOpaqueBars = false
         edgesForExtendedLayout = []
 
+        /*
         view.addSubview(toolbar)
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.sizeToFit()
@@ -64,9 +65,35 @@ final class ActionsViewController: UIViewController {
         ]
 
         addContentChildViewController(contentViewController, insets: UIEdgeInsets(top: 0, left: 0, bottom: toolbar.bounds.height, right: 0))
+
+        */
+        
+        addContentChildViewController(contentViewController, insets: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+
+        
+        var items = [UIBarButtonItem]()
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let leftButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(handleShareButtonTap))
+        let rightButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(handleTrashButtonTap))
+        
+        items.append(leftButton)
+        items.append(spacer)
+        items.append(rightButton)
+       
         navigationItem.title = contentViewController.navigationItem.title
+        toolbarItems = items
+        contentViewController.toolbarItems = toolbarItems
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.setToolbarHidden(false, animated: false)
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        self.navigationController?.setToolbarHidden(true, animated: false)
+    }
+    
     // MARK: Actions
     
     @objc
