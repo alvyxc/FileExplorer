@@ -246,7 +246,7 @@ final class DirectoryContentViewModel {
         let item = self.item(for: indexPath)
          print("deselect " + item.name)
         if isEditing {
-            if let index = selectedItems.index(where: { $0 == item }) {
+            if let index = selectedItems.firstIndex(where: { $0 == item }) {
                 selectedItems.remove(at: index)
             }
             delegate?.directoryViewModelDidChange(self)
